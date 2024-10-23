@@ -1,6 +1,7 @@
 <script setup>
     import { ref, reactive, onMounted } from 'vue'
     import { db } from './data/guitarra';
+    import Guitar from './components/Guitar.vue';
 
     const guitars = ref([db])
      
@@ -100,20 +101,11 @@
     <main class="container-xl mt-5">
         <h2 class="text-center">Nuestra Colección</h2>
         <div class="row mt-5">
-            <div v-for="guitar in guitars" class="col-md-6 col-lg-4 my-4 row align-items-center">
-                <div class="col-4">
-                    <img class="img-fluid" src=`./public/img/${guitar.imagen}.jpg` alt="imagen guitarra">
-                </div>
-                <div class="col-8">
-                    <h3 class="text-black fs-4 fw-bold text-uppercase">{{ guitar.nombre }}</h3>
-                    <p>{{ guitar.descripcion }}</p>
-                    <p class="fw-black text-primary fs-3">${{ guitar.precio }}</p>
-                    <button 
-                        type="button"
-                        class="btn btn-dark w-100 "
-                    >Agregar al Carrito</button>
-                </div>
-            </div>
+            <Guitar 
+                v-for="guitar in guitars"
+                :key="guitar.id"  
+                :guitar = "guitar"  
+            />
         </div>
     </main>
 
