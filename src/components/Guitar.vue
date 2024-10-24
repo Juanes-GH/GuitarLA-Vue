@@ -1,10 +1,14 @@
 <script setup>
+import { ref } from 'vue';
+
     const props = defineProps({
         guitar:{
             type: Object,
             requited: true
         }
     })
+
+    defineEmits(['add-to-Card'])
 </script>
 
 <template>
@@ -20,8 +24,11 @@
             <p class="fw-black text-primary fs-3">${{ guitar.precio }}</p>
             <button 
                 type="button"
-                class="btn btn-dark w-100 "
-            >Agregar al Carrito</button>
+                class="btn btn-dark w-100"
+                @click="$emit('add-to-Card', guitar)"
+            >
+                Agregar al Carrito
+            </button>
         </div>
     </div>
 </template>
