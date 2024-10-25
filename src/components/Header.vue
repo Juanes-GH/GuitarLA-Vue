@@ -1,14 +1,23 @@
 <script setup>
+import { ref } from 'vue';
+
 const props = defineProps({
     guitar:{
             type: Object,
-            requited: true
+            required: true
         },
     cart:{
         type:Array,
-        requited:true
+        required:true
     }
 })
+
+const totalCartCost= ref(0)
+
+const sumTotalGuitarCost = () =>{
+    console.log(props.cart,'Preciooo')
+     totalCartCost
+}
 
 </script>
 <template>
@@ -27,59 +36,63 @@ const props = defineProps({
                         <img class="img-fluid" src="/img/carrito.png" alt="imagen carrito" />
 
                         <div id="carrito" class="bg-white p-3">
-                            <p class="text-center">El carrito esta vacio</p>
-                            <table class="w-100 table">
-                                <thead>
-                                    <tr>
-                                        <th>Imagen</th>
-                                        <th>Nombre</th>
-                                        <th>Precio</th>
-                                        <th>Cantidad</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <img class="img-fluid" :src="'./public/img/' + cart.imagen + '.jpg'" alt="imagen guitarra">
-                                        </td>
-                                        <td>{{cart.nombre}}</td>
-                                        <td class="fw-bold">
-                                                ${{ cart.precio }}
-                                        </td>
-                                        <td class="flex align-items-start gap-4">
-                                            <button
-                                                type="button"
-                                                class="btn btn-dark"
-                                            >
-                                                -
-                                            </button>
-                                                1
-                                            <button
-                                                type="button"
-                                                class="btn btn-dark"
-                                            >
-                                                +
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                class="btn btn-danger"
-                                                type="button"
-                                            >
-                                                X
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            
+                            <p class="text-center text-uppercase text-red-500" v-if="cart.length === 0">El carrito está vacío</p>                            <template v-else>
+                                <table class="w-100 table">
+                                    <thead>
+                                        <tr>
+                                            <th>Imagen</th>
+                                            <th>Nombre</th>
+                                            <th>Precio</th>
+                                            <th>Cantidad</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="guitar in cart" :key="guitar.id">
+                                            <td>
+                                                <img class="img-fluid" :src="'./public/img/' + guitar.imagen + '.jpg'" :alt="'imagen guitarra'+ guitar.nombre">
+                                            </td>
+                                            <td>{{guitar.nombre}}</td>
+                                            <td class="fw-bold">
+                                                    ${{ guitar.precio }}
+                                            </td>
+                                            <td class="flex align-items-start gap-4">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-dark"
+                                                >
+                                                    -
+                                                </button>
+                                                    1
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-dark"
+                                                >
+                                                    +
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    class="btn btn-danger"
+                                                    type="button"
+                                                    @click="deleteGuitar"
+                                                >
+                                                    X
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                            <p class="text-end">Total pagar: <span class="fw-bold">$899</span></p>
+                            <p class="text-end">Total pagar: <span class="fw-bold">${{ totalCartCost }}</span></p>
                             <button class="btn btn-dark w-100 mt-3 p-2">Vaciar Carrito</button>
+                            </template>
+
                         </div>
                     </div>
                 </nav>
-            </div><!--.row-->
+            </div>
 
             <div class="row mt-5">
                 <div class="col-md-6 text-center text-md-start pt-5">
