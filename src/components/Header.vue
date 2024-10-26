@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
     guitar:{
@@ -12,12 +12,11 @@ const props = defineProps({
     }
 })
 
-const totalCartCost= ref(0)
+const totalCartCost = computed(() => 
+    props.cart.reduce((total, guitar) => total + guitar.precio, 0)
+);
 
-const sumTotalGuitarCost = () =>{
-    console.log(props.cart,'Preciooo')
-     totalCartCost
-}
+
 
 </script>
 <template>
