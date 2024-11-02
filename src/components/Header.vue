@@ -1,22 +1,26 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
-    guitar:{
-            type: Object,
-            required: true
-        },
     cart:{
         type:Array,
         required:true
     }
 })
 
+defineEmits(["decrease-quantity", "increase-quantity"])
+
 const totalCartCost = computed(() => 
     props.cart.reduce((total, guitar) => total + guitar.precio, 0)
 );
 
+const deleteGuitar = (id) =>{
+    props.cart = props.cart.filter(gui => gui.id !== id);
+}
 
+const clearCart = () =>{
+    props.cart.splice(0, props.cart.length);
+}
 
 </script>
 <template>
@@ -36,7 +40,10 @@ const totalCartCost = computed(() =>
 
                         <div id="carrito" class="bg-white p-3">
                             
-                            <p class="text-center text-uppercase text-red-500" v-if="cart.length === 0">El carrito está vacío</p>                            <template v-else>
+                            <p v-if="cart.length === 0" class="text-center text-uppercase text-red-500">
+                                El carrito está vacío
+                            </p>                            
+                            <template v-else>
                                 <table class="w-100 table">
                                     <thead>
                                         <tr>
@@ -50,7 +57,11 @@ const totalCartCost = computed(() =>
                                     <tbody>
                                         <tr v-for="guitar in cart" :key="guitar.id">
                                             <td>
-                                                <img class="img-fluid" :src="'./public/img/' + guitar.imagen + '.jpg'" :alt="'imagen guitarra'+ guitar.nombre">
+                                                <img
+                                                    class="img-fluid" 
+                                                    :src="'./public/img/' + guitar.imagen + '.jpg'" 
+                                                    :alt="'imagen guitarra'+ guitar.nombre"
+                                                >
                                             </td>
                                             <td>{{guitar.nombre}}</td>
                                             <td class="fw-bold">
@@ -60,13 +71,15 @@ const totalCartCost = computed(() =>
                                                 <button
                                                     type="button"
                                                     class="btn btn-dark"
+                                                    @click="$emit('decrease-quantity', guitar.id)"
                                                 >
                                                     -
                                                 </button>
-                                                    1
+                                                    {{ guitar.stock }}
                                                 <button
                                                     type="button"
                                                     class="btn btn-dark"
+                                                    @click="$emit('increase-quantity', guitar.id)"
                                                 >
                                                     +
                                                 </button>
@@ -75,7 +88,7 @@ const totalCartCost = computed(() =>
                                                 <button
                                                     class="btn btn-danger"
                                                     type="button"
-                                                    @click="deleteGuitar"
+                                                    @click="deleteGuitar(guitar.id)"
                                                 >
                                                     X
                                                 </button>
@@ -85,7 +98,12 @@ const totalCartCost = computed(() =>
                                 </table>
 
                             <p class="text-end">Total pagar: <span class="fw-bold">${{ totalCartCost }}</span></p>
-                            <button class="btn btn-dark w-100 mt-3 p-2">Vaciar Carrito</button>
+                            <button 
+                                class="btn btn-dark w-100 mt-3 p-2"
+                                @click="clearCart"
+                            >
+                                Vaciar Carrito
+                            </button>
                             </template>
 
                         </div>
