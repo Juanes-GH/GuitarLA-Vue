@@ -1,26 +1,22 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 
 const props = defineProps({
     cart:{
         type:Array,
         required:true
+    },
+    guitar:{
+        type:Object,
+        required:true
     }
 })
 
-defineEmits(["decrease-quantity", "increase-quantity"])
+defineEmits(["decrease-quantity", "increase-quantity", "clear-cart", "delete-guitar", "add-to-Card"]);
 
 const totalCartCost = computed(() => 
-    props.cart.reduce((total, guitar) => total + guitar.precio, 0)
+    props.cart.reduce((total, guitar) => total + guitar.precio * guitar.stock, 0)
 );
-
-const deleteGuitar = (id) =>{
-    props.cart = props.cart.filter(gui => gui.id !== id);
-}
-
-const clearCart = () =>{
-    props.cart.splice(0, props.cart.length);
-}
 
 </script>
 <template>
@@ -88,7 +84,7 @@ const clearCart = () =>{
                                                 <button
                                                     class="btn btn-danger"
                                                     type="button"
-                                                    @click="deleteGuitar(guitar.id)"
+                                                    @click="$emit('delete-guitar',guitar.id)"
                                                 >
                                                     X
                                                 </button>
@@ -100,7 +96,7 @@ const clearCart = () =>{
                             <p class="text-end">Total pagar: <span class="fw-bold">${{ totalCartCost }}</span></p>
                             <button 
                                 class="btn btn-dark w-100 mt-3 p-2"
-                                @click="clearCart"
+                                @click="$emit('clear-cart')"
                             >
                                 Vaciar Carrito
                             </button>
@@ -113,13 +109,16 @@ const clearCart = () =>{
 
             <div class="row mt-5">
                 <div class="col-md-6 text-center text-md-start pt-5">
-                    <h1 class="display-2 fw-bold">Modelo VAI</h1>
-                    <p class="mt-5 fs-5 text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, possimus quibusdam dolor nemo velit quo, fuga omnis, iure molestias optio tempore sint at ipsa dolorum odio exercitationem eos inventore odit.</p>
-                    <p class="text-primary fs-1 fw-black">$399</p>
+                    <h1 class="display-2 fw-bold">Modelo {{ guitar.nombre }}</h1>
+                    <p class="mt-5 fs-5 text-white">{{ guitar.descripcion }}.</p>
+                    <p class="text-primary fs-1 fw-black">${{guitar.precio}}</p>
                     <button 
                         type="button"
                         class="btn fs-4 bg-primary text-white py-2 px-5"
-                    >Agregar al Carrito</button>
+                        @click="$emit('add-to-Card', guitar)"
+                    >
+                        Agregar al Carrito
+                    </button>
                 </div>
             </div>
         </div>
@@ -128,5 +127,4 @@ const clearCart = () =>{
     </header>
 </template>
 <style scoped>
-
 </style>
